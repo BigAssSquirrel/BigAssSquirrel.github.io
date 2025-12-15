@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>StreetFaceit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: #0f1419;
+            color: #ffffff;
+            line-height: 1.5;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Контейнер для контента с учетом нижнего меню */
+        .page-container {
+            padding-bottom: 70px;
+            min-height: 100vh;
+        }
+        
+        /* Верхняя панель */
+        .top-bar {
+            background: linear-gradient(135deg, #1a2332 0%, #0f1419 100%);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid #2a3446;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            text-align: center;
+            color: #4dabf7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .logo span {
+            color: #ff6b6b;
+        }
+        
+        /* Верхнее меню */
+        .top-menu {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .top-menu-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 5px;
+            background-color: #1a2332;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #2a3446;
+            color: #c8d0e0;
+        }
+        
+        .top-menu-item.active {
+            background: linear-gradient(135deg, #4dabf7 0%, #228be6 100%);
+            color: white;
+            border-color: #4dabf7;
+            box-shadow: 0 4px 10px rgba(77, 171, 247, 0.3);
+        }
+        
+        .top-menu-item:hover {
+            background-color: #2a3446;
+            transform: translateY(-2px);
+        }
+        
+        /* Основной контент */
+        .content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #4dabf7;
+            font-weight: 700;
+        }
+        
+        /* Карточки контента */
+        .card {
+            background-color: #1a2332;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #2a3446;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+        
+        .card-text {
+            font-size: 15px;
+            color: #c8d0e0;
+            line-height: 1.6;
+        }
+        
+        /* Игровая статистика */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            background-color: #1a2332;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #2a3446;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #4dabf7;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #c8d0e0;
+        }
+        
+        /* Кнопка "Играть" в контенте */
+        .play-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%);
+            color: white;
+            text-align: center;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 30px 0;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .play-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.4);
+        }
+        
+        /* Нижнее меню */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1a2332;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid #2a3446;
+            z-index: 100;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #c8d0e0;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 8px;
+            flex: 1;
+            max-width: 33%;
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-item.active {
+            color: #4dabf7;
+            background-color: rgba(77, 171, 247, 0.1);
+        }
+        
+        .nav-item:hover {
+            color: #ffffff;
+            transform: translateY(-3px);
+        }
+        
+        /* Центральная кнопка "Играть" в нижнем меню */
+        .nav-item.play {
+            background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%);
+            color: white;
+            padding: 12px 0;
+            border-radius: 12px;
+            margin: -10px 5px 0;
+            box-shadow: 0 6px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .nav-item.play.active {
+            background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%);
+            color: white;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 480px) {
+            .top-menu-item {
+                font-size: 13px;
+                padding: 10px 3px;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 350px) {
+            .top-menu-item {
+                font-size: 12px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .nav-item {
+                font-size: 11px;
+            }
+            
+            .nav-item i {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Верхняя панель с логотипом и меню -->
+        <div class="top-bar">
+            <div class="logo">Street<span>Faceit</span></div>
+            
+            <div class="top-menu">
+                <div class="top-menu-item active" data-section="news">Новости</div>
+                <div class="top-menu-item" data-section="recommendations">Рекомендации</div>
+                <div class="top-menu-item" data-section="guide">Справочник</div>
+            </div>
+        </div>
+        
+        <!-- Основной контент -->
+        <div class="content">
+            <!-- Секция новостей -->
+            <section id="news" class="content-section active">
+                <h2 class="section-title">Новости</h2>
+                
+                <div class="card">
+                    <h3 class="card-title">Обновление матчмейкинга</h3>
+                    <p class="card-text">Мы внедрили улучшенную систему подбора соперников. Теперь баланс команд стал ещё лучше, а ожидание матча сократилось на 15%.</p>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">Новая карта "Urban District"</h3>
+                    <p class="card-text">Добавлена новая карта в режим "Захват точки". Исследуйте многоуровневые улицы современного мегаполиса в интенсивных боях.</p>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">Турнир "Street Legends"</h3>
+                    <p class="card-text">Регистрация на еженедельный турнир уже открыта. Призовой фонд: 5000 кредитов. Участвуйте и докажите своё превосходство!</p>
+                </div>
+            </section>
+            
+            <!-- Секция рекомендаций -->
+            <section id="recommendations" class="content-section">
+                <h2 class="section-title">Рекомендации</h2>
+                
+                <div class="card">
+                    <h3 class="card-title">Лучшее оружие этой недели</h3>
+                    <p class="card-text">Снайперская винтовка "Shadow" показывает лучшие результаты в текущем мета-состоянии игры. Точность +15%, перезарядка -10%.</p>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">Стратегия для новичков</h3>
+                    <p class="card-text">Начинайте с командных режимов, изучайте карты в тренировочном режиме и не забывайте использовать укрытия в бою.</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">87%</div>
+                        <div class="stat-label">Победы с командой</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">24/7</div>
+                        <div class="stat-label">Активные игроки</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5.2M</div>
+                        <div class="stat-label">Матчей за день</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1.2</div>
+                        <div class="stat-label">Средний K/D</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Секция справочника -->
+            <section id="guide" class="content-section">
+                <h2 class="section-title">Справочник</h2>
+                
+                <div class="card">
+                    <h3 class="card-title">Основы игры</h3>
+                    <p class="card-text">StreetFaceit — динамичный шутер с акцентом на тактику и командную игру. Изучите карты, используйте укрытия и взаимодействуйте с командой для победы.</p>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">Система рангов</h3>
+                    <p class="card-text">Всего 10 рангов, от "Новичка" до "Легенды". Ранг зависит от вашего уровня мастерства и результатов в соревновательных матчах.</p>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">Игровая валюта</h3>
+                    <p class="card-text">Зарабатывайте кредиты за победы и выполнение заданий. Тратьте их на скины, новые виды оружия и персонализацию персонажа.</p>
+                </div>
+                
+                <button class="play-btn">Быстрый старт</button>
+            </section>
+        </div>
+    </div>
+    
+    <!-- Нижнее меню навигации -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active" data-section="news">
+            <i class="fas fa-home"></i>
+            <span>Главная</span>
+        </a>
+        
+        <a href="#" class="nav-item play" data-section="play">
+            <i class="fas fa-gamepad"></i>
+            <span>Играть</span>
+        </a>
+        
+        <a href="#" class="nav-item" data-section="profile">
+            <i class="fas fa-user"></i>
+            <span>Профиль</span>
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Элементы меню
+            const topMenuItems = document.querySelectorAll('.top-menu-item');
+            const bottomNavItems = document.querySelectorAll('.nav-item');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            // Функция переключения секций
+            function switchSection(sectionId) {
+                // Скрыть все секции
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Показать нужную секцию
+                const activeSection = document.getElementById(sectionId);
+                if (activeSection) {
+                    activeSection.classList.add('active');
+                }
+                
+                // Обновить активные пункты верхнего меню
+                topMenuItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-section') === sectionId) {
+                        item.classList.add('active');
+                    }
+                });
+                
+                // Обновить активные пункты нижнего меню
+                bottomNavItems.forEach(item => {
+                    item.classList.remove('active');
+                    
+                    // Для нижнего меню "Главная" соответствует разделу "Новости"
+                    if (sectionId === 'news' && item.getAttribute('data-section') === 'news') {
+                        item.classList.add('active');
+                    } else if (item.getAttribute('data-section') === sectionId) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+            
+            // Обработчики для верхнего меню
+            topMenuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const sectionId = this.getAttribute('data-section');
+                    switchSection(sectionId);
+                });
+            });
+            
+            // Обработчики для нижнего меню
+            bottomNavItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    
+                    // Особый случай для кнопки "Играть"
+                    if (sectionId === 'play') {
+                        // Можно добавить действие для кнопки "Играть"
+                        alert('Запуск поиска матча...');
+                        return;
+                    }
+                    
+                    switchSection(sectionId);
+                });
+            });
+            
+            // Кнопка "Быстрый старт" в справочнике
+            const playButton = document.querySelector('.play-btn');
+            if (playButton) {
+                playButton.addEventListener('click', function() {
+                    alert('Начинаем игру! Удачи!');
+                });
+            }
+            
+            // Инициализация - показываем новости по умолчанию
+            switchSection('news');
+        });
+    </script>
+</body>
+</html>
